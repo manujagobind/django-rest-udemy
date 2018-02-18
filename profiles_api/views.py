@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 
 from . import serializers
+from . import models
 
 
 class HelloAPIView(APIView):
@@ -38,6 +39,8 @@ class HelloAPIView(APIView):
 class HelloViewSet(viewsets.ViewSet):
     """Test API ViewSet."""
 
+    serializer_class = serializers.HelloSerializer
+
     def list(self, request):
         """Return a hello message."""
 
@@ -48,3 +51,22 @@ class HelloViewSet(viewsets.ViewSet):
         ]
 
         return Response({'message': 'Hello', 'a_viewset': a_viewset})
+
+    def create(self, request):
+        """Create a new hello message."""
+
+        serializer = serializers.HelloSerializer(data=request.data)
+
+        if serializer.is_valid():
+            name = serializer.data.get('name')
+            message = 'Hello, {0}'.format(name)
+            return Response({'message': message})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Creating, reading and updating profiles."""
+
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
