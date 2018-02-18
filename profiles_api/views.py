@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 
 from . import serializers
 
@@ -33,3 +33,18 @@ class HelloAPIView(APIView):
             return Response({'message': message})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class HelloViewSet(viewsets.ViewSet):
+    """Test API ViewSet."""
+
+    def list(self, request):
+        """Return a hello message."""
+
+        a_viewset = [
+            'Uses actions (list, create, retrieve, partial_update)',
+            'Automatically maps to URLs using routers',
+            'Provides more functionality with less code',
+        ]
+
+        return Response({'message': 'Hello', 'a_viewset': a_viewset})
